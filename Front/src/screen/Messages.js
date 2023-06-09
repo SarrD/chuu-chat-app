@@ -12,7 +12,6 @@ import {
     ScrollView,
     SafeAreaView
 } from "react-native";
-import { io } from 'socket.io-client';
 
 const Messages = (props) => {
     
@@ -76,29 +75,21 @@ const Messages = (props) => {
     }, []);
 
     const formattedDate = [];
-    const formattedHour = []
     if (messages?.length > 0) {
         messages.forEach((msg) => {
-            formattedDate[msg.id] = new Date(msg.created_at).toLocaleTimeString("en-US", {
+            formattedDate[msg.id_message] = new Date(msg.created_at)
+			.toLocaleTimeString("en-US", {
                 day:"numeric",
                 month:"short",
                 hour: "numeric",
                 minute: "numeric",
             });
         
-            console.log('crezatedAt',msg.created_at);
+            // console.log('CREATED AT',msg.created_at);
+			// console.log('MESSAGE ID:' , msg.id_message)
         });
     }
 
-    // if(messages?.length > 0){
-    //  messages.forEach((msg) => {
-    //      formattedHour[msg.id] = new Date(msg.created_at).toLocaleTimeString("en-US", {
-    //          hour: "numeric",
-    //          minute: "numeric",
-    //          hour12: true,
-    //      });
-    //  })
-    // }
 
 
     const handleLongPress = (index) => {
@@ -144,7 +135,7 @@ const Messages = (props) => {
                         <View style={styles.contentSendedHours} >
                                 {isUser = decoded.login == msg.login}
                                 <Text style={styles.login, isUser ? styles.sendedHour : styles.receivedHour}>
-                                 {formattedDate[msg.id]}
+                                 {formattedDate[msg.id_message]}
                                  {/* {console.log('formattedDate',formattedDate[msg.id])} {console.log('messageid', msg.id)} */}
                                 </Text>
                             </View>
