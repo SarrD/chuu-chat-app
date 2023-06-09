@@ -20,13 +20,15 @@ const postMessage = (req, res) => {
 }
 
 const postMessageinChat = (req, res) => {
-	const datetime = new Date().toISOString().replace('T', ' ').toLocaleString({
-		timeZone: "Europe/Paris",
-	}).slice(0, 19);
+
+	const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+    
+    console.log(localISOTime)  // => '2015-01-26T06:40:36.181'
 	const data = req.body;
 	if (data.content && req.user.id_role !== 0) {
 		if (Object.keys(req.params).length !== 0 && req.user.id_rooms.includes(req.params.roomId)) {
-			const sql = `INSERT INTO messages (content, created_at, id_user, id_room) VALUES ("${data.content}", "${datetime}", ${req.user.id}, "${req.params.roomId}")`
+			const sql = `INSERT INTO messages (content, created_at, id_user, id_room) VALUES ("${data.content}", "${localISOTime}", ${req.user.id}, "${req.params.roomId}")`
 			db.query(sql, function (err) {
 				if (err) throw err;
 				
