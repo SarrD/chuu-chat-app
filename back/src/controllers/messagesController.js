@@ -13,10 +13,10 @@ const postMessage = (req, res) => {
 
 		db.query(sql, function (err) {
 			if (err) throw err;
-			else res.status(200).send('message inserted');
+			else res.status(200).json({message : "Message inserted."});
 		});
 	}
-	else res.send('write a message, please')
+	else res.json({message : "Please write a message"})
 }
 
 const postMessageinChat = (req, res) => {
@@ -45,12 +45,12 @@ const postMessageinChat = (req, res) => {
 				io.to(parseInt(req.params.roomId)).emit('newMessage', message)
 				// console.log(4);
 
-				res.status(200).send('message inserted');
+				res.status(200).json({message :'Message inserted.'});
 			});
 		}
-		else res.status(405).send('You are not allowed to post on this chat. Please subscribe to this chat.')
+		else res.status(405).json({message : 'You are not allowed to post on this chat. Please subscribe to this chat.'})
 	}
-	else res.send('write a message, please')
+	else res.json({message : "Please write a message"})
 }
 
 const deleteMessage = (req, res) => {
@@ -69,7 +69,7 @@ const deleteMessage = (req, res) => {
 				});
 			}
 			else {
-				res.status(400).send("You cannot delete this message.")
+				res.status(400).send({message :"You cannot delete this message."})
 			}
 		}
 	});
@@ -88,13 +88,13 @@ const updateMessage = (req, res) => {
 
 					db.query(sql, function (err) {
 						if (err) throw err;
-						else res.status(200).send('Message edited.');
+						else res.status(200).send({message :'Message edited.'});
 					});
 				}
-				else res.status(200).send('Please enter a message.');
+				else res.status(200).send({message :'Please enter a message.'});
 			}
 			else {
-				res.status(400).send("You cannot edit this message.")
+				res.status(400).send({message :"You cannot edit this message."})
 			}
 		}
 	});
@@ -108,7 +108,7 @@ const specificChat = (req, res) => {
 			if (err) throw err;
 			else res.send(data);
 		})
-	} else res.status(400).send('You do not have access to the room');
+	} else res.status(400).send({message : 'You do not have access to the room'});
 }
 
 

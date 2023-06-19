@@ -11,7 +11,7 @@ const supressMessagesFromGreneral = (req,res) =>{
 		if (results.length > 1) {
 
 			db.query('DELETE FROM messages WHERE `id_room` = 0')
-			res.status(200).send("All messages from GENERAL are know deleted ")
+			res.status(200).json({message : "All messages from GENERAL are now deleted "})
 
 		} 
 		else {
