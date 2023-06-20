@@ -83,37 +83,39 @@ const authUsers = (req, res) => {
 
 
 	db.query(`SELECT users.id, users.login, users.email, users.id_role, users.password, GROUP_CONCAT(participants.id_room) AS rooms FROM users LEFT JOIN participants ON users.id = id_user WHERE login = '${login}' GROUP BY id`, function (error, results) {
-		console.log("results1: ",results)
-		console.log(results.length);
+		console.log("user found: ",results)
 		if (results.length > 0) {
 			console.log('compare bcrypt:', bcrypt.compareSync(password, results[0].password))
 			if(bcrypt.compareSync(password, results[0].password)) {
 				const rooms = results[0].rooms?.split(',')
-		
 				const mySecret = "mysecret";
+				const token = jwt.sign(
+					{
+						login: login,
+						iat: ~~(Date.now() / 1000),
+						type: 'authtoken',
+						email: results[0].email,
+						id: results[0].id.toString(),
+						id_role: results[0].id_role,
+						id_rooms: rooms
+					},
+					mySecret,
+					{
+						expiresIn: "60d",
+					}
+				);
 	
-				const token = jwt.sign({
-					login: login,
-					iat: ~~(Date.now() / 1000),
-					type: 'authtoken',
-					email: results[0].email,
-					id: results[0].id.toString(),
-					id_role: results[0].id_role,
-					id_rooms: rooms
-				}, mySecret,{
-					expiresIn: "60d",
-					});
-	
-				const refreshToken = jwt.sign({
-					message: "refresh Token info",
-					iat: ~~(Date.now() / 1000),
-					type: 'token',
-					email: results[0].email,
-					login: login,
-					id_rooms: rooms,
-					id: results[0].id.toString(),
-					id_role: results[0].id_role,
-				},
+				const refreshToken = jwt.sign(
+					{
+						message: "refresh Token info",
+						iat: ~~(Date.now() / 1000),
+						type: 'token',
+						email: results[0].email,
+						login: login,
+						id_rooms: rooms,
+						id: results[0].id.toString(),
+						id_role: results[0].id_role,
+					},
 					mySecret,
 					{
 						expiresIn: "10d",
