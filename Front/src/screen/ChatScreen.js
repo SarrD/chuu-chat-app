@@ -4,10 +4,11 @@ import { View, TextInput, Text, Button, StyleSheet, ScrollView, TouchableWithout
 import InputText from '../components/InputText';
 import Messages from './Messages';
 import { io } from 'socket.io-client';
+import {API} from "../constant/constant";
 
 
 export default function ChatScreen({ navigation, route }, props) {
-	const [socket, setSocket] = useState(io("http://localhost:3000"));
+	const [socket, setSocket] = useState(io(API));
 
 	useEffect(() => {
 		socket.emit('joinIn', route.params.id_room)
